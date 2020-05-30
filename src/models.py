@@ -17,4 +17,9 @@ class User(db.Document):
     password = db.StringField(required=True)
 
 
+class Movie(db.Document):
+    name = db.StringField(required=True)
+    year = db.IntField()
+
+
     
