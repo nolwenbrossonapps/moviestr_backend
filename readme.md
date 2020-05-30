@@ -6,7 +6,7 @@ New venv:
 
 
 To run the app:
-- export FLASK_APP=src
+- export FLASK_APP=app.py
 - export FLASK_DEBUG=1
 - flask run
 

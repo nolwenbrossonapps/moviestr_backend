@@ -2,3 +2,4 @@ flask
 flask-mongoengine
 flask-wtf
 flask-login
+flask-jwt-extended
