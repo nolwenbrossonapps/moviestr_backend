@@ -18,12 +18,11 @@ login_serializer = URLSafeTimedSerializer(SECRET_KEY)
 def create_app():
     app = Flask(__name__)
     app.config["MONGODB_SETTINGS"] = {
-    "db": "user",
     "host": MONGODB_URL
     }
     app.config["SECRET_KEY"] = SECRET_KEY
     app.config["REMEMBER_COOKIE_DURATION"] = timedelta(days=1)
-    
+
     db.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
