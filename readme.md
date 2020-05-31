@@ -19,6 +19,4 @@ Local container to avoid installing mongodb:
 
 # Next steps:
 
-- POST signup: If ok, add tokens to cookies
-- POST login: If ok, add tokens to cookies
-- POST logout: Delete tokens 
+- POST logout: Delete tokens => Find how to resolve "Missing CSRF token"
