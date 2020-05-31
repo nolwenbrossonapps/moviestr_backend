@@ -10,6 +10,7 @@ def set_response_cookies(token_identity, resp=None, token_types=["access", "refr
     Helper function to set cookies in response
     """
     logging.warning("Setting cookies")
+    resp = jsonify(resp)
     token_types.sort()
     if token_types == ["access", "refresh"]:
         access_token = create_access_token(identity = token_identity)

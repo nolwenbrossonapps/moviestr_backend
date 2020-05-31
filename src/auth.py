@@ -4,7 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
 from . import db, login_serializer, jwt
 from .endpoint_utils import set_response_cookies
-from flask_jwt_extended import (jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt, unset_jwt_cookies)
+from flask_jwt_extended import (jwt_required, jwt_refresh_token_required, 
+                                get_jwt_identity, get_raw_jwt, unset_jwt_cookies,
+                                current_user)
 
 auth = Blueprint('auth', __name__)
 
@@ -12,11 +14,26 @@ auth = Blueprint('auth', __name__)
 @jwt.user_claims_loader
 def add_claims_to_access_token(identity):
     """
-    Allow to identify the token with the username
+    Allow to identify the token with anything we want by putting it in identity.
+    Here, it's email.
     """
     return {
-        'username': identity
+        'email': identity
     }
+
+
+@jwt.user_loader_callback_loader
+def user_loader_callback(identity):
+    """
+    This function is called whenever a protected endpoint is accessed, and must return 
+    an object based on the token. Here, identity corresponds to an user email. 
+    In protected endpoints, you can get the object using:
+    - the current_user LocalProxy
+    - or with get_current_user() method
+    """
+    return User.objects(
+        email=identity,
+    ).first()
 
 
 @auth.route('/logout', methods=['POST'])
@@ -39,8 +56,8 @@ def signup_post():
     logging.warning("User not existing")
     new_user = User(email=email, name=name, password=generate_password_hash(password, method='sha256'))
     new_user.save()
-    set_response_cookies(email, None, ["access", "refresh"])
-    return "User created", 200
+    resp = set_response_cookies(email, {"Created": True}, ["access", "refresh"])
+    return resp, 200
 
 
 @auth.route('/login', methods=['POST'])
@@ -53,8 +70,8 @@ def login_post():
 
     if not user or not check_password_hash(user.password, password):
         return "Wrong login informations", 400 
-    set_response_cookies(email, None, ["access", "refresh"])
-    return "User logged in", 200
+    resp = set_response_cookies(email, {"Logging": True}, ["access", "refresh"])
+    return resp, 200
 
 
 @auth.route('/token', methods=['POST'])
@@ -67,7 +84,7 @@ def token_post():
     if not user or not check_password_hash(user.password, str(obj["password"])):
         return "Wrong login informations", 400
     else:
-        resp = set_response_cookies(obj["email"], None, ["access", "refresh"])
+        resp = set_response_cookies(obj["email"], {"token": True}, ["access", "refresh"])
         return resp, 200    
 
 
@@ -80,14 +97,23 @@ def token_check():
     To access a jwt_required protected view, all we have to do is send in the JWT
     with the request. By default, this is done with an authorization header that looks like:
     Authorization: Bearer <access_token>
+    get_jwt_identity() => return identity
+
     """
     return "OK", 200
 
 
 @auth.route('/token/remove', methods=['POST'])
-@jwt_refresh_token_required
-@jwt_required
 def token_drop():
-    resp = jsonify({'logout': True})
+    resp = jsonify({"token_removed": True})
     unset_jwt_cookies(resp)
     return resp, 200
+
+
+@auth.route('/token/access', methods=['POST'])
+@jwt_refresh_token_required
+def refresh_access_cookies():
+    if current_user:
+        resp = set_response_cookies(current_user.email, {"token_refreshed": True}, ["access"])
+    return resp, 200
+

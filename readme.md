@@ -19,4 +19,6 @@ Local container to avoid installing mongodb:
 
 # Next steps:
 
-- POST logout: Delete tokens => Find how to resolve "Missing CSRF token"
+- Both stateless and stateful requests are now working with Token check.
+- To test: In postman, make a POST token, keep the csrf token in header, and make a POST token/access
+- Next steps: Improve the logic of signup, login, logout + Drop the token examples that should be in the Doc.

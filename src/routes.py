@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from mongoengine.context_managers import switch_collection
 from .models import Movie
 

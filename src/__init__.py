@@ -29,7 +29,7 @@ def create_app():
     # The JSON Web Tokens are signed with 
     # the secret key, so if someone gets that, they can create arbitrary tokens, and in essence log in as any user.
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = True  # set_refresh_cookies() will now also set the non-httponly CSRF cookies
     db.init_app(app)
     jwt.init_app(app)
 
