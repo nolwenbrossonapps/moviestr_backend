@@ -15,3 +15,10 @@ Docs:
 
 Local container to avoid installing mongodb:
 - docker run -p 27017:27017 -v moviestr_authent:/data/db mongo
+
+
+# Next steps:
+
+- POST signup: If ok, add tokens to cookies
+- POST login: If ok, add tokens to cookies
+- POST logout: Delete tokens 
