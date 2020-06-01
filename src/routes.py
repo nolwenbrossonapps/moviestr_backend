@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, request, jsonify
 from mongoengine.context_managers import switch_collection
 from .models import Movie
 
@@ -7,12 +7,7 @@ main = Blueprint(__name__, "routes")
 
 @main.route('/')
 def index():
-    return render_template('index.html')
-
-
-@main.route('/profile')
-def profile():
-    return render_template('profile.html')
+    return "Backend Up"
 
 
 @main.route('/movie', methods=['POST'])
