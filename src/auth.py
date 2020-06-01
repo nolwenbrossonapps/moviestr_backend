@@ -41,8 +41,8 @@ def user_loader_callback(identity):
 @jwt_required
 def logout():
     resp = jsonify({'logout': True})
-    unset_jwt_cookies(resp)
-    return "Logged out", 200
+    unset_jwt_cookies(resp)  # = unset_access_cookies() + unset_refresh_cookies
+    return resp, 200
 
 
 @auth.route('/signup', methods=['POST'])
@@ -88,7 +88,7 @@ def token_post():
         return resp, 200    
 
 
-@auth.route('/token', methods=['GET'])
+@auth.route('/tokens_validity', methods=['GET'])
 @jwt_refresh_token_required
 @jwt_required
 def token_check():
@@ -100,7 +100,7 @@ def token_check():
     get_jwt_identity() => return identity
 
     """
-    return "OK", 200
+    return "Tokens Valid", 200
 
 
 @auth.route('/token/remove', methods=['POST'])

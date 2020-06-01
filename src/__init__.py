@@ -30,6 +30,8 @@ def create_app():
     # the secret key, so if someone gets that, they can create arbitrary tokens, and in essence log in as any user.
     app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     app.config['JWT_COOKIE_CSRF_PROTECT'] = True  # set_refresh_cookies() will now also set the non-httponly CSRF cookies
+    app.config["JWT_ACCESS_CSRF_HEADER_NAME"] = "X-CSRF-TOKEN-ACCESS"
+    app.config["JWT_REFRESH_CSRF_HEADER_NAME"] = "X-CSRF-TOKEN-REFRESH"
     db.init_app(app)
     jwt.init_app(app)
 
