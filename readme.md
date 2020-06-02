@@ -25,7 +25,7 @@ Then:
 1. docker run -p 27017:27017 --name backend_mongo -v moviestr_authent:/data/db mongo (build a mongo container with volume)
 2. docker network create moviestr_network (create a bridge network)
 4. docker network connect moviestr_network mongo_container_id (connect mongo container to it)
-5. docker run -p 5000:5000 --name moviestr_backend moviestr_backend (build a flask container)
+5. docker run -p 5000:5000 --name moviestr_backend moviestr_backend flask run --host=0.0.0.0
 6. docker network connect moviestr_network flask_container_id (connect flask container to the network)
 
 
