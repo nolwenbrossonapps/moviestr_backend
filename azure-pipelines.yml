@@ -27,8 +27,8 @@ strategy:
 
 
 services:
-  nginx: moviestr_backend
-  redis: backend_mongo
+  moviestr_backend: moviestr_backend
+  backend_mongo: backend_mongo
 steps:
 - task: UsePythonVersion@0
   inputs:
