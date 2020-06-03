@@ -10,3 +10,4 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 RUN pip install -r requirements.dev.txt
+ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
