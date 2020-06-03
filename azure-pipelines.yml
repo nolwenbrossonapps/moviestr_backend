@@ -6,6 +6,18 @@
 trigger:
 - master
 
+resources:
+  containers:
+  - container: moviestr_backend
+    image: moviestr_backend-master
+    ports:
+    - 5000:5000
+  - container: backend_mongo
+    image: mongo
+    ports:
+    - 27017:27017
+  
+
 pool:
   vmImage: 'ubuntu-latest'
 strategy:
@@ -25,3 +37,6 @@ steps:
     pip install -r requirements.dev.txt
     pip install pytest-azurepipelines
   displayName: 'Install dependencies'
+- script: |
+    python -m pytest
+  displayName: 'Make Unit tests'
