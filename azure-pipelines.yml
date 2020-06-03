@@ -9,7 +9,7 @@ trigger:
 resources:
   containers:
   - container: moviestr_backend
-    image: moviestr_backend-master
+    image: nolwenbrosson/cicd:moviestr_backend-master
     options: flask run --host=0.0.0.0
     ports:
     - 5000:5000
