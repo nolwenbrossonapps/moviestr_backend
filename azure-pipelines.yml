@@ -42,5 +42,8 @@ steps:
     pip install pytest-azurepipelines
   displayName: 'Install dependencies'
 - script: |
+    docker ps
+  displayName: 'Check to delete'
+- script: |
     python -m pytest
   displayName: 'Make Unit tests'
