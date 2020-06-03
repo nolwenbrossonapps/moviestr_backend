@@ -26,6 +26,10 @@ strategy:
     Python37:
       python.version: '3.7'
 
+
+services:
+  nginx: moviestr_backend
+  redis: backend_mongo
 steps:
 - task: UsePythonVersion@0
   inputs:
