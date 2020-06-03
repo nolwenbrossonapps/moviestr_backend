@@ -16,6 +16,7 @@ def test_post_login():
     assert r.status_code == 200
 
 
+@pytest.mark.dependency(depends=["test_post_login"])
 def test_token_remove():
     r = requests.post("http://127.0.0.1:5000/token/remove")
     assert r.status_code == 200

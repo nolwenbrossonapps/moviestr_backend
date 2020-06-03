@@ -6,6 +6,18 @@
 trigger:
 - master
 
+resources:
+  containers:
+  - container: moviestr_backend
+    image: nolwenbrosson/cicd:moviestr_backend-master
+    ports:
+    - 5000:5000
+  - container: backend_mongo
+    image: mongo
+    ports:
+    - 27017:27017
+  
+
 pool:
   vmImage: 'ubuntu-latest'
 strategy:
@@ -13,6 +25,10 @@ strategy:
     Python37:
       python.version: '3.7'
 
+
+services:
+  moviestr_backend: moviestr_backend
+  backend_mongo: backend_mongo
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -25,3 +41,9 @@ steps:
     pip install -r requirements.dev.txt
     pip install pytest-azurepipelines
   displayName: 'Install dependencies'
+- script: |
+    docker ps
+  displayName: 'Check to delete'
+- script: |
+    python -m pytest
+  displayName: 'Make Unit tests'
