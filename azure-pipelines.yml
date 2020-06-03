@@ -10,6 +10,7 @@ resources:
   containers:
   - container: moviestr_backend
     image: moviestr_backend-master
+    options: flask run --host=0.0.0.0
     ports:
     - 5000:5000
   - container: backend_mongo
