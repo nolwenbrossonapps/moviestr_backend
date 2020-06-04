@@ -1,63 +1,75 @@
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
 trigger:
 - master
-
-resources:
-  containers:
-  - container: moviestr_backend
-    image: nolwenbrosson/cicd:moviestr_backend-master
-    ports:
-    - 5000:5000
-  - container: backend_mongo
-    image: mongo
-    ports:
-    - 27017:27017
   
-
 pool:
   vmImage: 'ubuntu-latest'
-strategy:
-  matrix:
-    Python37:
-      python.version: '3.7'
 
-
-services:
-  moviestr_backend: moviestr_backend
-  backend_mongo: backend_mongo
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    pip install -r requirements.dev.txt
-    pip install pytest-azurepipelines
-  displayName: 'Install dependencies'
-- script: |
-    python -m pytest
-  displayName: 'Make Unit tests'
-- task: Docker@2
-  displayName: Login to Docker Hub
-  inputs:
-    command: login
-    containerRegistry: cicd
-- task: Docker@2
-  displayName: Build and Push
-  inputs:
-    command: buildAndPush
-    repository: nolwenbrosson/cicd
-    tags: |
-      moviestr_backend-master
-- task: Docker@2
-  displayName: Logout of ACR
-  inputs:
-    command: logout
-    containerRegistry: cicd
+jobs:
+  - job: DeployNewImage
+    displayName: Deploy New image on Docker Hub
+    steps:
+    - task: Docker@2
+      displayName: Login to Docker Hub
+      inputs:
+        command: login
+        containerRegistry: cicd
+    - task: Docker@2
+      displayName: Build and Push
+      inputs:
+        command: buildAndPush
+        repository: nolwenbrosson/cicd
+        tags: |
+          moviestr_backend-$(Build.SourceBranchName)
+    - task: Docker@2
+      displayName: Logout of ACR
+      inputs:
+        command: logout
+        containerRegistry: cicd
+    
+  - job: TestsAndDeploy
+    dependsOn: DeployNewImage
+    displayName: Unit tests and Deployment in Docker Hub of master image
+    strategy:
+      matrix:
+        Python37:
+          python.version: '3.7'
+    services:
+      backend_mongo:
+        image: 'mongo:3.6.17'
+        ports:
+          - 27017:27017
+      moviestr_backend:
+        image: 'nolwenbrosson/cicd:moviestr_backend-$(Build.SourceBranchName)'
+        ports:
+          - 5000:5000
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+      displayName: 'Use Python $(python.version)'
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install -r requirements.dev.txt
+        pip install pytest-azurepipelines
+      displayName: 'Install dependencies'
+    - script: |
+        python -m pytest
+      displayName: 'Make Unit tests'
+    - task: Docker@2
+      displayName: Login to Docker Hub
+      inputs:
+        command: login
+        containerRegistry: cicd
+    - task: Docker@2
+      displayName: Build and Push
+      inputs:
+        command: buildAndPush
+        repository: nolwenbrosson/cicd
+        tags: |
+          moviestr_backend-master
+    - task: Docker@2
+      displayName: Logout of ACR
+      inputs:
+        command: logout
+        containerRegistry: cicd
