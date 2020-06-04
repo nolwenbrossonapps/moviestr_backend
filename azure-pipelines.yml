@@ -48,7 +48,7 @@ steps:
   displayName: Login to Docker Hub
   inputs:
     command: login
-    containerRegistry: nolwenbrosson
+    containerRegistry: cicd
 - task: Docker@2
   displayName: Build and Push
   inputs:
@@ -60,4 +60,4 @@ steps:
   displayName: Logout of ACR
   inputs:
     command: logout
-    containerRegistry: nolwenbrosson
+    containerRegistry: cicd
