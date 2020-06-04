@@ -27,6 +27,7 @@ jobs:
         containerRegistry: cicd
     
   - job: TestsAndDeploy
+    dependsOn: DeployNewImage
     displayName: Unit tests and Deployment in Docker Hub of master image
     strategy:
       matrix:
