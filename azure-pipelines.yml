@@ -8,8 +8,6 @@ jobs:
   - job: DeployNewImage
     displayName: Deploy New image on Docker Hub
     steps:
-    - script: |
-        echo $(Build.SourceBranch)
     - task: Docker@2
       displayName: Login to Docker Hub
       inputs:
@@ -21,7 +19,7 @@ jobs:
         command: buildAndPush
         repository: nolwenbrosson/cicd
         tags: |
-          moviestr_backend-$(SourceBranchName)
+          moviestr_backend-$(Build.SourceBranchName)
     - task: Docker@2
       displayName: Logout of ACR
       inputs:
@@ -41,7 +39,7 @@ jobs:
         ports:
           - 27017:27017
       moviestr_backend:
-        image: 'nolwenbrosson/cicd:moviestr_backend-$(SourceBranchName)'
+        image: 'nolwenbrosson/cicd:moviestr_backend-$(Build.SourceBranchName)'
         ports:
           - 5000:5000
     steps:
