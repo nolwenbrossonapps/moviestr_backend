@@ -8,6 +8,8 @@ jobs:
   - job: DeployNewImage
     displayName: Deploy New image on Docker Hub
     steps:
+    - script: |
+      echo $(SourceBranchName)
     - task: Docker@2
       displayName: Login to Docker Hub
       inputs:
