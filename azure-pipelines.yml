@@ -60,4 +60,4 @@ steps:
   displayName: Logout of ACR
   inputs:
     command: logout
-    containerRegistry: dockerRegistryServiceConnection1
+    containerRegistry: nolwenbrosson
