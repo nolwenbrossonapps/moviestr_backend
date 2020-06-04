@@ -3,10 +3,6 @@ trigger:
   
 pool:
   vmImage: 'ubuntu-latest'
-strategy:
-  matrix:
-    Python37:
-      python.version: '3.7'
 
 jobs:
   - job: DeployNewImage
@@ -32,6 +28,10 @@ jobs:
     
   - job: TestsAndDeploy
     displayName: Unit tests and Deployment in Docker Hub of master image
+    strategy:
+      matrix:
+        Python37:
+          python.version: '3.7'
     services:
       backend_mongo:
         image: 'mongo:3.6.17'
