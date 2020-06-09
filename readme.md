@@ -31,4 +31,4 @@ Then:
 
 # Next steps:
 
-- Build the azure devops pipleine
+- Build the first components of Moviestr
